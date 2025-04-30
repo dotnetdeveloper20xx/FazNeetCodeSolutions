@@ -367,6 +367,152 @@ class Program
 
 ---
 
+# 1️⃣2️⃣ 🧮 Problem: Palindrome Check — O(n)
+
+### ✅ Goal
+Determine whether a given string is a **palindrome** — meaning it reads the same backward as forward.
+
+### Example:
+```
+Input:  "racecar"
+Output: true
+```
+
+### 🔍 Key Insight
+Use **two pointers**:
+- One starts from the beginning
+- One starts from the end
+- Compare characters until they meet
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class PalindromeChecker
+{
+    public bool IsPalindrome(string s)
+    {
+        int left = 0;
+        int right = s.Length - 1; // Pointers from both ends
+
+        while (left < right)
+        {
+            if (s[left] != s[right])
+                return false; // Mismatch found
+
+            left++; // Move inward
+            right--;
+        }
+
+        return true; // All characters matched
+    }
+}
+```
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        string word = "racecar";
+
+        PalindromeChecker checker = new PalindromeChecker();
+        bool isPal = checker.IsPalindrome(word);
+
+        Console.WriteLine(isPal); // Output: True
+    }
+}
+```
+
+### 📌 Summary
+- A very efficient two-pointer solution.
+- Time complexity: **O(n)**, space: **O(1)**.
+- You can add logic to ignore punctuation and spaces for advanced versions.
+
+---
+
+## 1️⃣3️⃣ 🧮 Problem: Matrix Search (Sorted Matrix) — O(m + n)
+
+### ✅ Goal
+Search for a target value in a **sorted 2D matrix** where:
+- Each row is sorted left to right
+- Each column is sorted top to bottom
+
+### Example:
+```
+Matrix:
+[
+  [1,  4,  7, 11, 15],
+  [2,  5,  8, 12, 19],
+  [3,  6,  9, 16, 22],
+  [10,13, 14,17, 24],
+  [18,21, 23,26, 30]
+]
+Target: 5 → Output: true
+Target: 20 → Output: false
+```
+
+### 🔍 Key Insight
+Start from the **top-right corner**:
+- If the current value is less than the target → go **down**
+- If it’s greater → go **left**
+
+This guarantees linear time: at most **m + n** steps.
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class MatrixSearcher
+{
+    public bool SearchMatrix(int[][] matrix, int target)
+    {
+        int row = 0;
+        int col = matrix[0].Length - 1; // Start at top-right corner
+
+        while (row < matrix.Length && col >= 0)
+        {
+            if (matrix[row][col] == target)
+                return true; // Found it
+
+            if (matrix[row][col] > target)
+                col--; // Too big, move left
+            else
+                row++; // Too small, move down
+        }
+
+        return false; // Exhausted search
+    }
+}
+```
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        int[][] matrix = new int[][]
+        {
+            new int[] {1, 4, 7, 11, 15},
+            new int[] {2, 5, 8, 12, 19},
+            new int[] {3, 6, 9, 16, 22},
+            new int[] {10,13,14,17,24},
+            new int[] {18,21,23,26,30}
+        };
+
+        MatrixSearcher searcher = new MatrixSearcher();
+
+        Console.WriteLine(searcher.SearchMatrix(matrix, 5));  // Output: True
+        Console.WriteLine(searcher.SearchMatrix(matrix, 20)); // Output: False
+    }
+}
+```
+
+### 📌 Summary
+- Great example of **greedy navigation**.
+- Time complexity: **O(m + n)**.
+- Always start at **top-right** or **bottom-left** in such matrices.
+
+---
+
 
 
 
