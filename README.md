@@ -1680,5 +1680,168 @@ public class HistogramSolver
 }
 ```
 
+## 7️⃣ 🧮 Problem: Trapping Rain Water — Two Pointers + Elevation
+
+### ✅ Goal
+Given an array representing elevation heights, compute how much water is trapped after rain.
+
+### Example:
+```
+Input: [0,1,0,2,1,0,1,3,2,1,2,1]
+Output: 6
+```
+
+### 🔍 Key Insight
+Use two pointers and track max height to the left and right of each bar.
+
+### ✅ C# Code
+```csharp
+public class RainWaterTrapSolver
+{
+    public int Trap(int[] height)
+    {
+        int left = 0, right = height.Length - 1;
+        int leftMax = 0, rightMax = 0;
+        int water = 0;
+
+        while (left < right)
+        {
+            if (height[left] < height[right])
+            {
+                if (height[left] >= leftMax)
+                    leftMax = height[left];
+                else
+                    water += leftMax - height[left];
+                left++;
+            }
+            else
+            {
+                if (height[right] >= rightMax)
+                    rightMax = height[right];
+                else
+                    water += rightMax - height[right];
+                right--;
+            }
+        }
+
+        return water;
+    }
+}
+```
+
+---
+
+## 8️⃣ 🧮 Problem: Coin Change — DP with Choices
+
+### ✅ Goal
+Find minimum number of coins to make amount. If not possible, return -1.
+
+### Example:
+```
+Input: coins = [1,2,5], amount = 11
+Output: 3  // 5+5+1
+```
+
+### 🔍 Key Insight
+Use DP: dp[i] = min coins to make amount i. Try every coin.
+
+### ✅ C# Code
+```csharp
+public class CoinChanger
+{
+    public int CoinChange(int[] coins, int amount)
+    {
+        int[] dp = Enumerable.Repeat(amount + 1, amount + 1).ToArray();
+        dp[0] = 0;
+
+        for (int i = 1; i <= amount; i++)
+        {
+            foreach (int coin in coins)
+            {
+                if (coin <= i)
+                    dp[i] = Math.Min(dp[i], dp[i - coin] + 1);
+            }
+        }
+
+        return dp[amount] > amount ? -1 : dp[amount];
+    }
+}
+```
+
+---
+
+## 9️⃣ 🧮 Problem: House Robber — DP on Non-Adjacent Choices
+
+### ✅ Goal
+Rob non-adjacent houses for max money. Can't rob two next to each other.
+
+### Example:
+```
+Input: [2,7,9,3,1]
+Output: 12  // Rob 2 + 9 + 1
+```
+
+### 🔍 Key Insight
+DP: At each house, choose max of (rob now + dp[i-2]) or skip.
+
+### ✅ C# Code
+```csharp
+public class HouseRobber
+{
+    public int Rob(int[] nums)
+    {
+        if (nums.Length == 0) return 0;
+        if (nums.Length == 1) return nums[0];
+
+        int prev1 = nums[0];
+        int prev2 = Math.Max(nums[0], nums[1]);
+
+        for (int i = 2; i < nums.Length; i++)
+        {
+            int current = Math.Max(nums[i] + prev1, prev2);
+            prev1 = prev2;
+            prev2 = current;
+        }
+
+        return prev2;
+    }
+}
+```
+
+---
+
+## 🔟 🧮 Problem: Climbing Stairs — Fibonacci DP
+
+### ✅ Goal
+Return number of distinct ways to climb to the top of n steps, 1 or 2 at a time.
+
+### Example:
+```
+Input: 5 → Output: 8
+```
+
+### 🔍 Key Insight
+Classic DP recurrence: ways[n] = ways[n-1] + ways[n-2]
+
+### ✅ C# Code
+```csharp
+public class StairClimber
+{
+    public int ClimbStairs(int n)
+    {
+        if (n <= 2) return n;
+
+        int first = 1, second = 2;
+        for (int i = 3; i <= n; i++)
+        {
+            int temp = first + second;
+            first = second;
+            second = temp;
+        }
+
+        return second;
+    }
+}
+```
 
 
