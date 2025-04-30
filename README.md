@@ -358,14 +358,253 @@ class Program
 }
 ```
 
----
-
 ### 📌 Summary
 - Time complexity is **O(n)** — we only loop once.
 - A `HashSet` lets us check for duplicates in constant time.
 - This is the most efficient and clean way to detect duplicates.
 
 ---
+
+# 3️⃣ 🧮 Problem: Max Subarray Sum (Kadane’s Algorithm) — O(n)
+
+### ✅ Goal
+Find the contiguous subarray within an array (containing at least one number) that has the largest sum and return that sum.
+
+### Example:
+```
+Input:  nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+Output: 6
+Explanation: The subarray [4, -1, 2, 1] has the largest sum = 6
+```
+
+### 🔍 Key Insight
+Use **Kadane’s Algorithm**:
+- At each element, decide to start a new subarray or extend the existing one.
+- Track the maximum sum seen so far.
+
+### ✅ C# Code With Comments
+```csharp
+public class MaxSubarraySolver
+{
+    public int MaxSubArray(int[] nums)
+    {
+        int current = nums[0]; // Start with the first element
+        int max = nums[0];     // Also start with first element as max
+
+        for (int i = 1; i < nums.Length; i++)
+        {
+            current = Math.Max(nums[i], current + nums[i]); // Start new or extend
+            max = Math.Max(max, current); // Track max
+        }
+
+        return max;
+    }
+}
+```
+
+---
+
+# 4️⃣ 🧮 Problem: Sort Array using Merge Sort — O(n log n)
+
+### ✅ Goal
+Sort an array of integers using the Merge Sort algorithm.
+
+### Example:
+```
+Input:  [5, 2, 3, 1]
+Output: [1, 2, 3, 5]
+```
+
+### 🔍 Key Insight
+Use recursion to split the array, then merge the sorted halves.
+
+### ✅ C# Code With Comments
+```csharp
+public class MergeSorter
+{
+    public int[] MergeSort(int[] nums)
+    {
+        if (nums.Length <= 1) return nums;
+
+        int mid = nums.Length / 2;
+        int[] left = MergeSort(nums[..mid]);
+        int[] right = MergeSort(nums[mid..]);
+
+        return Merge(left, right);
+    }
+
+    private int[] Merge(int[] left, int[] right)
+    {
+        List<int> result = new();
+        int i = 0, j = 0;
+
+        while (i < left.Length && j < right.Length)
+            result.Add(left[i] < right[j] ? left[i++] : right[j++]);
+
+        result.AddRange(left[i..]);
+        result.AddRange(right[j..]);
+
+        return result.ToArray();
+    }
+}
+```
+
+---
+
+# 5️⃣ 🧮 Problem: Binary Search — O(log n)
+
+### ✅ Goal
+Find the index of a target element in a **sorted** array.
+
+### Example:
+```
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+Output: 4
+```
+
+### 🔍 Key Insight
+Binary search splits the array and searches one half.
+
+### ✅ C# Code With Comments
+```csharp
+public class BinarySearcher
+{
+    public int BinarySearch(int[] nums, int target)
+    {
+        int left = 0, right = nums.Length - 1;
+
+        while (left <= right)
+        {
+            int mid = (left + right) / 2;
+
+            if (nums[mid] == target) return mid;
+            if (nums[mid] < target) left = mid + 1;
+            else right = mid - 1;
+        }
+
+        return -1;
+    }
+}
+```
+
+---
+
+# 6️⃣ 🧮 Problem: Merge Intervals — O(n log n)
+
+### ✅ Goal
+Merge overlapping intervals.
+
+### Example:
+```
+Input: [[1,3],[2,6],[8,10],[15,18]]
+Output: [[1,6],[8,10],[15,18]]
+```
+
+### 🔍 Key Insight
+Sort by start times, then merge overlapping intervals.
+
+### ✅ C# Code With Comments
+```csharp
+public class IntervalMerger
+{
+    public int[][] Merge(int[][] intervals)
+    {
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+        List<int[]> merged = new();
+        int[] current = intervals[0];
+
+        foreach (var interval in intervals)
+        {
+            if (interval[0] <= current[1])
+                current[1] = Math.Max(current[1], interval[1]);
+            else
+            {
+                merged.Add(current);
+                current = interval;
+            }
+        }
+
+        merged.Add(current);
+        return merged.ToArray();
+    }
+}
+```
+
+---
+
+# 7️⃣ 🧮 Problem: Kth Largest Element — O(n log k)
+
+### ✅ Goal
+Find the **kth largest element** in an unsorted array.
+
+### Example:
+```
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+```
+
+### 🔍 Key Insight
+Use a min-heap (PriorityQueue) to keep top-k largest elements.
+
+### ✅ C# Code With Comments
+```csharp
+public class KthLargestFinder
+{
+    public int FindKthLargest(int[] nums, int k)
+    {
+        PriorityQueue<int, int> minHeap = new();
+
+        foreach (var num in nums)
+        {
+            minHeap.Enqueue(num, num);
+            if (minHeap.Count > k)
+                minHeap.Dequeue();
+        }
+
+        return minHeap.Peek();
+    }
+}
+```
+
+---
+
+# 8️⃣ 🧮 Problem: Top K Frequent Elements — O(n log k)
+
+### ✅ Goal
+Return the `k` most frequent elements.
+
+### Example:
+```
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+```
+
+### 🔍 Key Insight
+Count frequencies, then maintain a min-heap of size k.
+
+### ✅ C# Code With Comments
+```csharp
+public class TopKFrequentFinder
+{
+    public int[] TopKFrequent(int[] nums, int k)
+    {
+        Dictionary<int, int> freq = new();
+        foreach (var num in nums)
+            freq[num] = freq.GetValueOrDefault(num, 0) + 1;
+
+        PriorityQueue<int, int> heap = new();
+        foreach (var entry in freq)
+        {
+            heap.Enqueue(entry.Key, entry.Value);
+            if (heap.Count > k)
+                heap.Dequeue();
+        }
+
+        return heap.UnorderedItems.Select(x => x.Element).ToArray();
+    }
+}
+```
+
 
 # 1️⃣2️⃣ 🧮 Problem: Palindrome Check — O(n)
 
