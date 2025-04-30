@@ -430,7 +430,7 @@ class Program
 
 ---
 
-## 1️⃣3️⃣ 🧮 Problem: Matrix Search (Sorted Matrix) — O(m + n)
+# 1️⃣3️⃣ 🧮 Problem: Matrix Search (Sorted Matrix) — O(m + n)
 
 ### ✅ Goal
 Search for a target value in a **sorted 2D matrix** where:
@@ -510,6 +510,199 @@ class Program
 - Great example of **greedy navigation**.
 - Time complexity: **O(m + n)**.
 - Always start at **top-right** or **bottom-left** in such matrices.
+
+---
+
+
+# 9️⃣ 🧮 Problem: Sliding Window Maximum — O(n)
+
+### ✅ Goal
+Given an array of integers and a window size `k`, return the **maximum value in each window** as it slides across the array.
+
+### Example:
+```
+Input:  nums = [1,3,-1,-3,5,3,6,7], k = 3
+Output: [3,3,5,5,6,7]
+```
+
+### 🔍 Key Insight
+- Use a **deque (double-ended queue)** to track the indices of potential maximums.
+- Keep the **largest element at the front**, and remove elements that slide out of the window.
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class SlidingWindowMax
+{
+    public int[] MaxSlidingWindow(int[] nums, int k)
+    {
+        LinkedList<int> deque = new(); // Stores indices of useful elements
+        List<int> result = new();      // Final result array
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            // Remove indices that are out of this window
+            if (deque.Count > 0 && deque.First.Value <= i - k)
+                deque.RemoveFirst();
+
+            // Remove indices of smaller elements from the back
+            while (deque.Count > 0 && nums[deque.Last.Value] < nums[i])
+                deque.RemoveLast();
+
+            deque.AddLast(i); // Add current element index
+
+            // Add to result once window is fully overlapping
+            if (i >= k - 1)
+                result.Add(nums[deque.First.Value]);
+        }
+
+        return result.ToArray();
+    }
+}
+```
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        int[] nums = new int[] {1, 3, -1, -3, 5, 3, 6, 7};
+        int k = 3;
+
+        SlidingWindowMax solver = new SlidingWindowMax();
+        var result = solver.MaxSlidingWindow(nums, k);
+
+        Console.WriteLine(string.Join(", ", result)); // Output: 3, 3, 5, 5, 6, 7
+    }
+}
+```
+
+### 📌 Summary
+- Deque gives constant-time max lookup and removal.
+- Total time: **O(n)**, each element is added/removed once.
+- Perfect for live data streaming, signal processing, or game analytics.
+
+---
+
+## 🔟 🧮 Problem: Find Substring (Pattern Match) — O(n)
+
+### ✅ Goal
+Check if a **specific pattern** (substring) exists in a larger string.
+
+### Example:
+```
+Input:  s = "hello world", pattern = "lo w"
+Output: true
+```
+
+### 🔍 Key Insight
+Use a **sliding window** of the pattern’s length and compare each substring with the target pattern.
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class SubstringFinder
+{
+    public bool ContainsSubstring(string s, string pattern)
+    {
+        int patternLength = pattern.Length;
+
+        for (int i = 0; i <= s.Length - patternLength; i++)
+        {
+            string window = s.Substring(i, patternLength); // Get current substring
+
+            if (window == pattern)
+                return true; // Pattern found
+        }
+
+        return false; // No match found
+    }
+}
+```
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        string text = "hello world";
+        string pattern = "lo w";
+
+        SubstringFinder finder = new SubstringFinder();
+        bool exists = finder.ContainsSubstring(text, pattern);
+
+        Console.WriteLine(exists); // Output: True
+    }
+}
+```
+
+### 📌 Summary
+- Sliding window through the main string.
+- Simple and effective for basic pattern searches.
+- For large-scale or wildcard patterns, use KMP or Regex (future upgrade).
+
+---
+
+## 1️⃣1️⃣ 🧮 Problem: Longest Substring Without Repeating Characters — O(n)
+
+### ✅ Goal
+Return the length of the **longest substring without repeating characters**.
+
+### Example:
+```
+Input:  s = "abcabcbb"
+Output: 3  // Longest is "abc"
+```
+
+### 🔍 Key Insight
+Use a **sliding window** and **HashSet**:
+- Move the window forward, keeping characters unique.
+- When a duplicate appears, move the start pointer until it's gone.
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class UniqueSubstringFinder
+{
+    public int LengthOfLongestSubstring(string s)
+    {
+        HashSet<char> seen = new(); // Track characters in current window
+        int left = 0, maxLen = 0;
+
+        for (int right = 0; right < s.Length; right++)
+        {
+            while (!seen.Add(s[right])) // If already seen, shrink from the left
+            {
+                seen.Remove(s[left++]);
+            }
+
+            maxLen = Math.Max(maxLen, right - left + 1); // Update max length
+        }
+
+        return maxLen;
+    }
+}
+```
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        string input = "abcabcbb";
+
+        UniqueSubstringFinder finder = new UniqueSubstringFinder();
+        int length = finder.LengthOfLongestSubstring(input);
+
+        Console.WriteLine(length); // Output: 3
+    }
+}
+```
+
+### 📌 Summary
+- This problem is a classic **sliding window** technique.
+- HashSet gives constant time checks and removals.
+- Time complexity: **O(n)** — best possible.
 
 ---
 
