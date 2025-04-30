@@ -1237,4 +1237,184 @@ public class AnagramGrouper
     }
 }
 ```
+[Previously included problems remain unchanged]
+
+## 7️⃣ 🧮 Problem: Trie (Prefix Tree) — Insert, Search, StartsWith
+
+### ✅ Goal
+Implement a Trie data structure to support:
+- Insert a word
+- Search if a word exists
+- Check if a prefix exists
+
+### Example:
+```
+Insert: "apple"
+Search: "apple" → true
+StartsWith: "app" → true
+```
+
+### 🔍 Key Insight
+Use a nested dictionary or tree structure to represent each character in a word.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class Trie
+{
+    private class TrieNode
+    {
+        public Dictionary<char, TrieNode> Children = new();
+        public bool IsEndOfWord = false;
+    }
+
+    private readonly TrieNode root = new();
+
+    public void Insert(string word)
+    {
+        TrieNode node = root;
+        foreach (char c in word)
+        {
+            if (!node.Children.ContainsKey(c))
+                node.Children[c] = new TrieNode();
+            node = node.Children[c];
+        }
+        node.IsEndOfWord = true; // Mark end of word
+    }
+
+    public bool Search(string word)
+    {
+        TrieNode node = root;
+        foreach (char c in word)
+        {
+            if (!node.Children.ContainsKey(c)) return false;
+            node = node.Children[c];
+        }
+        return node.IsEndOfWord; // True only if full word matches
+    }
+
+    public bool StartsWith(string prefix)
+    {
+        TrieNode node = root;
+        foreach (char c in prefix)
+        {
+            if (!node.Children.ContainsKey(c)) return false;
+            node = node.Children[c];
+        }
+        return true; // Prefix exists
+    }
+}
+```
+
+---
+
+## 8️⃣ 🧮 Problem: Word Ladder — Shortest Transformation Using BFS
+
+### ✅ Goal
+Transform word `beginWord` to `endWord` changing one letter at a time. Each transformation must be a valid word from the list.
+Return the length of the shortest transformation path.
+
+### Example:
+```
+beginWord = "hit", endWord = "cog", wordList = ["hot","dot","dog","lot","log","cog"]
+Output: 5  // "hit" → "hot" → "dot" → "dog" → "cog"
+```
+
+### 🔍 Key Insight
+Use **Breadth-First Search (BFS)** to explore transformations level by level.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class WordLadderSolver
+{
+    public int LadderLength(string beginWord, string endWord, IList<string> wordList)
+    {
+        HashSet<string> wordSet = new(wordList);
+        if (!wordSet.Contains(endWord)) return 0;
+
+        Queue<(string word, int steps)> queue = new();
+        queue.Enqueue((beginWord, 1));
+
+        while (queue.Count > 0)
+        {
+            var (word, steps) = queue.Dequeue();
+
+            if (word == endWord) return steps;
+
+            for (int i = 0; i < word.Length; i++)
+            {
+                char[] chars = word.ToCharArray();
+
+                for (char c = 'a'; c <= 'z'; c++)
+                {
+                    chars[i] = c;
+                    string newWord = new string(chars);
+
+                    if (wordSet.Remove(newWord)) // Only use each word once
+                        queue.Enqueue((newWord, steps + 1));
+                }
+            }
+        }
+
+        return 0; // No transformation found
+    }
+}
+```
+
+---
+
+## 9️⃣ 🧮 Problem: Decode String — Stack-Based Expansion of Nested Encoded Strings
+
+### ✅ Goal
+Given an encoded string like "3[a2[c]]", return its decoded form → "accaccacc".
+
+### Example:
+```
+Input: "3[a2[c]]"
+Output: "accaccacc"
+```
+
+### 🔍 Key Insight
+Use a **stack** to decode nested structures (numbers, brackets, and substrings).
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class StringDecoder
+{
+    public string DecodeString(string s)
+    {
+        Stack<int> countStack = new();
+        Stack<string> stringStack = new();
+        string current = "";
+        int k = 0;
+
+        foreach (char c in s)
+        {
+            if (char.IsDigit(c))
+            {
+                k = k * 10 + (c - '0'); // Build full number
+            }
+            else if (c == '[')
+            {
+                countStack.Push(k);
+                stringStack.Push(current);
+                k = 0;
+                current = "";
+            }
+            else if (c == ']')
+            {
+                int count = countStack.Pop();
+                string prev = stringStack.Pop();
+                current = prev + string.Concat(Enumerable.Repeat(current, count));
+            }
+            else
+            {
+                current += c;
+            }
+        }
+
+        return current;
+    }
+}
+```
+
 
