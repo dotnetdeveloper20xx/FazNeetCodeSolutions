@@ -132,3 +132,100 @@ class Program
 - We treat the 2D matrix like a sorted 1D array.
 - We apply binary search to find the target quickly.
 - We convert 1D indices to 2D matrix positions
+
+
+
+# 🧮 Problem: Product of Array Except Self (Without Division, O(n) Time)
+
+## ✅ Goal
+Given an array of integers `nums`, return an array `answer` where each element at index `i` is the **product of all elements in the array except `nums[i]`**, **without using division**, and with **O(n)** time complexity.
+
+### Example:
+```text
+Input:  nums = [1, 2, 3, 4]
+Output: answer = [24, 12, 8, 6]
+```
+
+### Why?
+- For `answer[0]`: 2 * 3 * 4 = 24
+- For `answer[1]`: 1 * 3 * 4 = 12
+- For `answer[2]`: 1 * 2 * 4 = 8
+- For `answer[3]`: 1 * 2 * 3 = 6
+
+We achieve this **without dividing** the total product and without nested loops.
+
+---
+
+## 🔍 Key Insight
+We can break the product at each index `i` into:
+- A **prefix product**: product of all elements before `i`
+- A **suffix product**: product of all elements after `i`
+
+So:
+```text
+answer[i] = product of all elements before i * product of all elements after i
+```
+
+---
+
+## ✅ C# Code With Line-by-Line Comments
+```csharp
+public class ProductArray
+{
+    public int[] ProductExceptSelf(int[] nums)
+    {
+        int n = nums.Length;                   // Length of the input array
+        int[] answer = new int[n];             // Output array to hold result
+
+        // Step 1: Calculate prefix products
+        answer[0] = 1;                         // Nothing before index 0, so set to 1
+        for (int i = 1; i < n; i++)
+        {
+            answer[i] = answer[i - 1] * nums[i - 1];
+            // answer[i] holds product of all elements to the left of i
+        }
+
+        // Step 2: Calculate suffix products and multiply with prefix
+        int right = 1;                         // Holds the product of all elements to the right
+        for (int i = n - 1; i >= 0; i--)
+        {
+            answer[i] *= right;                // Multiply current prefix product with suffix
+            right *= nums[i];                  // Update right to include current element
+        }
+
+        return answer;                         // Final result
+    }
+}
+```
+
+---
+
+## 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        int[] nums = new int[] {1, 2, 3, 4};
+
+        ProductArray calculator = new ProductArray();
+        int[] result = calculator.ProductExceptSelf(nums);
+
+        Console.WriteLine(string.Join(", ", result));
+        // Output: 24, 12, 8, 6
+    }
+}
+```
+
+---
+
+## 📌 Summary
+- We compute the result in **O(n)** time by doing two passes:
+  1. One from **left to right** for prefix products
+  2. One from **right to left** for suffix products
+- We multiply prefix and suffix to get the final result.
+- We avoid using division, making the solution efficient and safe for arrays with zeroes.
+
+---
+
+
