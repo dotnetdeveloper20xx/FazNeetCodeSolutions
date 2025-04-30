@@ -301,4 +301,72 @@ class Program
 ---
 
 
+# 🧮 Problem: Find Duplicates — O(n) Using HashSet
+
+### ✅ Goal
+Given an array of integers, check if any value appears **at least twice**. Return `true` if any duplicates exist, otherwise `false`.
+
+### Example:
+```
+Input:  nums = [1, 2, 3, 4, 1]
+Output: true  // Because the number 1 appears more than once
+```
+
+---
+
+### 🔍 Key Insight
+Use a `HashSet` to track numbers we've seen. If we try to add a number and it's already in the set, it's a duplicate.
+
+---
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class DuplicateChecker
+{
+    public bool HasDuplicate(int[] nums)
+    {
+        HashSet<int> seen = new(); // Create a set to track seen numbers
+
+        foreach (int num in nums)
+        {
+            if (!seen.Add(num)) // Try to add the number to the set
+            {
+                return true;    // If Add returns false, it's already in the set => duplicate found
+            }
+        }
+
+        return false; // No duplicates were found in the array
+    }
+}
+```
+
+---
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        int[] nums = new int[] {1, 2, 3, 4, 1};
+
+        DuplicateChecker checker = new DuplicateChecker();
+        bool hasDuplicate = checker.HasDuplicate(nums);
+
+        Console.WriteLine(hasDuplicate); // Output: True
+    }
+}
+```
+
+---
+
+### 📌 Summary
+- Time complexity is **O(n)** — we only loop once.
+- A `HashSet` lets us check for duplicates in constant time.
+- This is the most efficient and clean way to detect duplicates.
+
+---
+
+
+
 
