@@ -1417,4 +1417,268 @@ public class StringDecoder
 }
 ```
 
+# 🧩 Matrix, Binary Search & Dynamic Programming Challenges – C# Guide with Explanations
+
+## 1️⃣ 🧮 Problem: Find Peak Element — Binary Search Twist
+
+### ✅ Goal
+Find an index `i` such that `nums[i] > nums[i-1]` and `nums[i] > nums[i+1]`. Elements outside bounds are treated as -∞.
+
+### Example:
+```
+Input: [1, 2, 3, 1]
+Output: 2 // nums[2] = 3 is a peak
+```
+
+### 🔍 Key Insight
+Use binary search — check if mid is rising or falling:
+- If `nums[mid] < nums[mid + 1]`, the peak must be right
+- Else, it’s on the left (including mid)
+
+### ✅ C# Code
+```csharp
+public class PeakFinder
+{
+    public int FindPeakElement(int[] nums)
+    {
+        int left = 0, right = nums.Length - 1;
+
+        while (left < right)
+        {
+            int mid = (left + right) / 2;
+            if (nums[mid] < nums[mid + 1])
+                left = mid + 1;
+            else
+                right = mid;
+        }
+
+        return left;
+    }
+}
+```
+
+---
+
+## 2️⃣ 🧮 Problem: Spiral Matrix — Matrix Traversal Pattern
+
+### ✅ Goal
+Return elements of a 2D matrix in spiral (clockwise) order.
+
+### Example:
+```
+Input: [[1,2,3],[4,5,6],[7,8,9]]
+Output: [1,2,3,6,9,8,7,4,5]
+```
+
+### 🔍 Key Insight
+Track 4 boundaries: top, bottom, left, right — shrink them in layers while looping.
+
+### ✅ C# Code
+```csharp
+public class SpiralMatrixSolver
+{
+    public IList<int> SpiralOrder(int[][] matrix)
+    {
+        List<int> result = new();
+        int top = 0, bottom = matrix.Length - 1;
+        int left = 0, right = matrix[0].Length - 1;
+
+        while (top <= bottom && left <= right)
+        {
+            for (int i = left; i <= right; i++) result.Add(matrix[top][i]);
+            top++;
+            for (int i = top; i <= bottom; i++) result.Add(matrix[i][right]);
+            right--;
+            if (top <= bottom)
+                for (int i = right; i >= left; i--) result.Add(matrix[bottom][i]);
+            bottom--;
+            if (left <= right)
+                for (int i = bottom; i >= top; i--) result.Add(matrix[i][left]);
+            left++;
+        }
+
+        return result;
+    }
+}
+```
+
+---
+
+## 3️⃣ 🧮 Problem: Rotate Image (90 Degrees) — In-Place Matrix Transformation
+
+### ✅ Goal
+Rotate an n x n 2D matrix 90° clockwise in-place.
+
+### Example:
+```
+Input: [[1,2,3],[4,5,6],[7,8,9]]
+Output: [[7,4,1],[8,5,2],[9,6,3]]
+```
+
+### 🔍 Key Insight
+1. **Transpose** the matrix
+2. **Reverse** each row
+
+### ✅ C# Code
+```csharp
+public class ImageRotator
+{
+    public void Rotate(int[][] matrix)
+    {
+        int n = matrix.Length;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                (matrix[i][j], matrix[j][i]) = (matrix[j][i], matrix[i][j]);
+            }
+        }
+
+        foreach (var row in matrix)
+            Array.Reverse(row);
+    }
+}
+```
+
+---
+
+## 4️⃣ 🧮 Problem: Set Matrix Zeroes — Matrix Mutation Trick
+
+### ✅ Goal
+Set the entire row and column to 0 for any cell containing 0, in-place.
+
+### Example:
+```
+Input: [[1,1,1],[1,0,1],[1,1,1]]
+Output: [[1,0,1],[0,0,0],[1,0,1]]
+```
+
+### 🔍 Key Insight
+Use first row and column as markers. Remember if the first row/column originally had any zero.
+
+### ✅ C# Code
+```csharp
+public class MatrixZeroSetter
+{
+    public void SetZeroes(int[][] matrix)
+    {
+        int rows = matrix.Length, cols = matrix[0].Length;
+        bool zeroRow = false, zeroCol = false;
+
+        for (int i = 0; i < rows; i++) if (matrix[i][0] == 0) zeroCol = true;
+        for (int j = 0; j < cols; j++) if (matrix[0][j] == 0) zeroRow = true;
+
+        for (int i = 1; i < rows; i++)
+            for (int j = 1; j < cols; j++)
+                if (matrix[i][j] == 0)
+                    matrix[i][0] = matrix[0][j] = 0;
+
+        for (int i = 1; i < rows; i++)
+            for (int j = 1; j < cols; j++)
+                if (matrix[i][0] == 0 || matrix[0][j] == 0)
+                    matrix[i][j] = 0;
+
+        if (zeroCol)
+            for (int i = 0; i < rows; i++) matrix[i][0] = 0;
+
+        if (zeroRow)
+            for (int j = 0; j < cols; j++) matrix[0][j] = 0;
+    }
+}
+```
+
+---
+
+## 5️⃣ 🧮 Problem: Search in Rotated Sorted Array — Advanced Binary Search
+
+### ✅ Goal
+Search target in rotated sorted array. Return index or -1.
+
+### Example:
+```
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+```
+
+### 🔍 Key Insight
+Binary search with logic to determine which side is sorted.
+
+### ✅ C# Code
+```csharp
+public class RotatedArraySearcher
+{
+    public int Search(int[] nums, int target)
+    {
+        int left = 0, right = nums.Length - 1;
+
+        while (left <= right)
+        {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) return mid;
+
+            if (nums[left] <= nums[mid])
+            {
+                if (nums[left] <= target && target < nums[mid])
+                    right = mid - 1;
+                else
+                    left = mid + 1;
+            }
+            else
+            {
+                if (nums[mid] < target && target <= nums[right])
+                    left = mid + 1;
+                else
+                    right = mid - 1;
+            }
+        }
+
+        return -1;
+    }
+}
+```
+
+---
+
+## 6️⃣ 🧮 Problem: Largest Rectangle in Histogram — Stack Geometry
+
+### ✅ Goal
+Find the largest rectangle that can be formed in a histogram.
+
+### Example:
+```
+Input: [2,1,5,6,2,3]
+Output: 10
+```
+
+### 🔍 Key Insight
+Use a stack to keep indices of increasing bars. On smaller height, compute area.
+
+### ✅ C# Code
+```csharp
+public class HistogramSolver
+{
+    public int LargestRectangleArea(int[] heights)
+    {
+        Stack<int> stack = new();
+        int maxArea = 0;
+        heights = heights.Append(0).ToArray();
+
+        for (int i = 0; i < heights.Length; i++)
+        {
+            while (stack.Count > 0 && heights[i] < heights[stack.Peek()])
+            {
+                int h = heights[stack.Pop()];
+                int width = stack.Count == 0 ? i : i - stack.Peek() - 1;
+                maxArea = Math.Max(maxArea, h * width);
+            }
+            stack.Push(i);
+        }
+
+        return maxArea;
+    }
+}
+```
+
+
 
