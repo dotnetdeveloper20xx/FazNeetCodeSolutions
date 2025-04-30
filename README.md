@@ -945,8 +945,16 @@ class Program
 
 ---
 
-# 🧩 Advanced Coding Challenges Set 2
+# 🧩 Advanced Coding Challenges Set 2 – C# Solutions with Clear Explanations
 
+This document covers 9 advanced coding challenges in C#, each solved with the most optimal approach. Every section includes:
+- ✅ Goal
+- 🔍 Key Insight
+- ✅ C# Code with Learning Comments
+- 🧪 Example Usage
+- 📌 Summary
+
+---
 
 ## 1️⃣ 🧮 Problem: Minimum Window Substring — Advanced Sliding Window with Hash Maps
 
@@ -1154,6 +1162,79 @@ public class RpnEvaluator
 }
 ```
 
+---
 
+## 5️⃣ 🧮 Problem: Meeting Rooms — Scheduling with Intervals and Heap
 
+### ✅ Goal
+Determine if a person can attend all meetings (no overlaps).
+
+### Example:
+```
+Input: [[0,30],[5,10],[15,20]]
+Output: false
+```
+
+### 🔍 Key Insight
+Sort intervals and check for overlaps.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class MeetingScheduler
+{
+    public bool CanAttendMeetings(int[][] intervals)
+    {
+        Array.Sort(intervals, (a, b) => a[0].CompareTo(b[0]));
+
+        for (int i = 1; i < intervals.Length; i++)
+        {
+            if (intervals[i][0] < intervals[i - 1][1])
+                return false; // Overlap found
+        }
+
+        return true;
+    }
+}
+```
+
+---
+
+## 6️⃣ 🧮 Problem: Group Anagrams — O(n k log k)
+
+### ✅ Goal
+Group all anagrams from a list of strings.
+
+### Example:
+```
+Input: ["eat", "tea", "tan", "ate", "nat", "bat"]
+Output: [["eat","tea","ate"],["tan","nat"],["bat"]]
+```
+
+### 🔍 Key Insight
+Sort each word and use the sorted version as a dictionary key.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class AnagramGrouper
+{
+    public IList<IList<string>> GroupAnagrams(string[] strs)
+    {
+        Dictionary<string, List<string>> map = new();
+
+        foreach (var word in strs)
+        {
+            var chars = word.ToCharArray();
+            Array.Sort(chars);
+            string sorted = new string(chars);
+
+            if (!map.ContainsKey(sorted))
+                map[sorted] = new List<string>();
+
+            map[sorted].Add(word);
+        }
+
+        return map.Values.ToList();
+    }
+}
+```
 
