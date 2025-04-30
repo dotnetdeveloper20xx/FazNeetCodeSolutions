@@ -228,4 +228,77 @@ class Program
 
 ---
 
+# 🧮 Problem: Two Sum — O(n) Using HashMap
+
+### ✅ Goal
+Given an array of integers `nums` and an integer `target`, return the indices of the two numbers that add up to the target.
+
+### Example:
+```
+Input:  nums = [2, 7, 11, 15], target = 9
+Output: [0, 1] // Because nums[0] + nums[1] = 2 + 7 = 9
+```
+
+---
+
+### 🔍 Key Insight
+Use a dictionary to store values we've seen and their indices. While iterating, for each number, check if its complement (target - number) exists in the dictionary.
+
+---
+
+### ✅ C# Code With Line-by-Line Comments
+```csharp
+public class Solution
+{
+    public int[] TwoSum(int[] nums, int target)
+    {
+        Dictionary<int, int> map = new();     // Dictionary to store number and its index
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            int complement = target - nums[i]; // What number do we need to reach the target?
+
+            if (map.ContainsKey(complement))   // If we already saw that number, we found the answer
+            {
+                return new int[] { map[complement], i }; // Return indices of the two numbers
+            }
+
+            map[nums[i]] = i; // Otherwise, store the current number with its index
+        }
+
+        return Array.Empty<int>(); // No solution found (problem guarantees one exists)
+    }
+}
+```
+
+---
+
+### 🧪 Example Usage
+```csharp
+class Program
+{
+    static void Main()
+    {
+        int[] nums = new int[] {2, 7, 11, 15};
+        int target = 9;
+
+        Solution solver = new Solution();
+        int[] result = solver.TwoSum(nums, target);
+
+        Console.WriteLine(string.Join(", ", result));
+        // Output: 0, 1
+    }
+}
+```
+
+---
+
+### 📌 Summary
+- Time complexity is **O(n)** because we loop through the array once.
+- We avoid nested loops by using a **dictionary** to remember what we’ve seen.
+- Efficient, easy to understand, and works on all valid inputs.
+
+---
+
+
 
