@@ -945,6 +945,215 @@ class Program
 
 ---
 
+# 🧩 Advanced Coding Challenges Set 2
+
+
+## 1️⃣ 🧮 Problem: Minimum Window Substring — Advanced Sliding Window with Hash Maps
+
+### ✅ Goal
+Given strings `s` and `t`, return the **smallest substring of `s`** that contains all characters in `t` (including frequency).
+
+### Example:
+```
+Input:  s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+```
+
+### 🔍 Key Insight
+Use two dictionaries:
+- One to count characters in `t`
+- One for the current window in `s`
+Use two pointers to slide the window and adjust when all required characters are matched.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class MinWindowFinder
+{
+    public string MinWindow(string s, string t)
+    {
+        if (s.Length < t.Length) return "";
+
+        Dictionary<char, int> need = new();
+        foreach (char c in t)
+            need[c] = need.GetValueOrDefault(c, 0) + 1;
+
+        Dictionary<char, int> window = new();
+        int left = 0, right = 0, valid = 0;
+        int minLen = int.MaxValue, start = 0;
+
+        while (right < s.Length)
+        {
+            char c = s[right++];
+            if (need.ContainsKey(c))
+            {
+                window[c] = window.GetValueOrDefault(c, 0) + 1;
+                if (window[c] == need[c]) valid++;
+            }
+
+            while (valid == need.Count)
+            {
+                if (right - left < minLen)
+                {
+                    minLen = right - left;
+                    start = left;
+                }
+
+                char d = s[left++];
+                if (need.ContainsKey(d))
+                {
+                    if (window[d] == need[d]) valid--;
+                    window[d]--;
+                }
+            }
+        }
+
+        return minLen == int.MaxValue ? "" : s.Substring(start, minLen);
+    }
+}
+```
+
+---
+
+## 2️⃣ 🧮 Problem: Longest Consecutive Sequence — O(n) Using HashSet
+
+### ✅ Goal
+Given an unsorted array, find the length of the **longest consecutive sequence**.
+
+### Example:
+```
+Input: [100, 4, 200, 1, 3, 2]
+Output: 4  // Sequence: 1, 2, 3, 4
+```
+
+### 🔍 Key Insight
+Use a HashSet to detect sequence starts. Only start counting if `num - 1` is **not** in the set.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class SequenceFinder
+{
+    public int LongestConsecutive(int[] nums)
+    {
+        HashSet<int> set = new(nums);
+        int longest = 0;
+
+        foreach (int num in nums)
+        {
+            if (!set.Contains(num - 1)) // only start from the beginning of a sequence
+            {
+                int current = num;
+                int length = 1;
+
+                while (set.Contains(current + 1))
+                {
+                    current++;
+                    length++;
+                }
+
+                longest = Math.Max(longest, length);
+            }
+        }
+
+        return longest;
+    }
+}
+```
+
+---
+
+## 3️⃣ 🧮 Problem: Valid Parentheses — O(n) Using Stack
+
+### ✅ Goal
+Check if a string of brackets is valid (every opening has a matching closing).
+
+### Example:
+```
+Input: "()[]{}"
+Output: true
+```
+
+### 🔍 Key Insight
+Use a stack to push opening brackets. For each closing bracket, pop and match.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class ParenthesesValidator
+{
+    public bool IsValid(string s)
+    {
+        Stack<char> stack = new();
+        Dictionary<char, char> map = new()
+        {
+            { ')', '(' },
+            { ']', '[' },
+            { '}', '{' }
+        };
+
+        foreach (char c in s)
+        {
+            if (map.ContainsValue(c))
+                stack.Push(c);
+            else if (map.ContainsKey(c))
+            {
+                if (stack.Count == 0 || stack.Pop() != map[c])
+                    return false;
+            }
+        }
+
+        return stack.Count == 0;
+    }
+}
+```
+
+---
+
+## 4️⃣ 🧮 Problem: Evaluate Reverse Polish Notation (RPN) — O(n) Using Stack
+
+### ✅ Goal
+Evaluate a postfix expression like ["2","1","+","3","*"] → Result = 9
+
+### Example:
+```
+Input: ["2", "1", "+", "3", "*"]
+Output: 9
+```
+
+### 🔍 Key Insight
+Use a stack to compute: push numbers, pop for operations.
+
+### ✅ C# Code With Learning Comments
+```csharp
+public class RpnEvaluator
+{
+    public int EvalRPN(string[] tokens)
+    {
+        Stack<int> stack = new();
+
+        foreach (var token in tokens)
+        {
+            if (int.TryParse(token, out int num))
+                stack.Push(num);
+            else
+            {
+                int b = stack.Pop();
+                int a = stack.Pop();
+
+                stack.Push(token switch
+                {
+                    "+" => a + b,
+                    "-" => a - b,
+                    "*" => a * b,
+                    "/" => a / b,
+                    _ => throw new InvalidOperationException()
+                });
+            }
+        }
+
+        return stack.Pop();
+    }
+}
+```
+
 
 
 
