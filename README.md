@@ -1844,4 +1844,181 @@ public class StairClimber
 }
 ```
 
+# 🧩 Binary Tree Challenges – Learn Through Plain English and Fully Explained C# Code
+
+This document covers 10 essential Binary Tree challenges. For each:
+- We explain the problem in simple, plain English
+- Walk you through how to think about the solution
+- Provide beginner-friendly, line-by-line commented C# code
+
+---
+
+## 1️⃣ 🧮 Problem: Binary Tree Level Order Traversal — O(n)
+
+### ✅ Goal
+Given the root of a binary tree, return the values of the nodes level by level (like scanning the tree row by row).
+
+### 🌳 Example:
+```
+Input Tree:
+    1
+   / \
+  2   3
+ / \   \
+4   5   6
+
+Output: [[1], [2, 3], [4, 5, 6]]
+```
+
+### 💡 Core Idea
+Use a **queue** to perform **Breadth-First Search (BFS)**:
+- Start with the root node
+- At each level, process all nodes and queue their children
+
+### ✅ C# Code with Line-by-Line Comments
+```csharp
+public class TreeNode
+{
+    public int val;
+    public TreeNode left;
+    public TreeNode right;
+    public TreeNode(int val = 0, TreeNode left = null, TreeNode right = null)
+    {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+public class TreeTraversal
+{
+    public IList<IList<int>> LevelOrder(TreeNode root)
+    {
+        List<IList<int>> result = new();  // Final result to hold levels
+        if (root == null) return result;  // Edge case: empty tree
+
+        Queue<TreeNode> queue = new();    // Queue to hold nodes at each level
+        queue.Enqueue(root);              // Start with the root node
+
+        while (queue.Count > 0)
+        {
+            int levelSize = queue.Count;       // Number of nodes at current level
+            List<int> level = new();           // List to hold values at this level
+
+            for (int i = 0; i < levelSize; i++)
+            {
+                TreeNode node = queue.Dequeue(); // Remove node from queue
+                level.Add(node.val);             // Add node's value to current level
+
+                if (node.left != null) queue.Enqueue(node.left);   // Add left child if exists
+                if (node.right != null) queue.Enqueue(node.right); // Add right child if exists
+            }
+
+            result.Add(level); // Add the level to final result
+        }
+
+        return result; // Return the list of levels
+    }
+}
+```
+
+---
+
+## 2️⃣ 🧮 Problem: Lowest Common Ancestor (LCA) in Binary Tree — O(n)
+
+### ✅ Goal
+Given the root of a binary tree and two nodes `p` and `q`, return the **lowest common ancestor** — the lowest node in the tree that has both `p` and `q` as descendants.
+
+### 🌳 Example:
+```
+Tree:
+       3
+      / \
+     5   1
+    / \ / \
+   6  2 0  8
+     / \
+    7   4
+
+Input: p = 5, q = 1 → Output: 3 (root is the lowest common ancestor)
+Input: p = 5, q = 4 → Output: 5 (5 is ancestor of 4)
+```
+
+### 💡 Core Idea
+Use recursion to search for `p` and `q`:
+- If root is `null`, return null
+- If root equals `p` or `q`, return root
+- Search both left and right
+- If both sides return non-null → root is LCA
+- If one side is null → return the non-null side
+
+### ✅ C# Code with Line-by-Line Comments
+```csharp
+public class AncestorFinder
+{
+    public TreeNode LowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q)
+    {
+        if (root == null) return null;           // Base case: no node here
+        if (root == p || root == q) return root; // Found one of the nodes
+
+        TreeNode left = LowestCommonAncestor(root.left, p, q);   // Recurse on left
+        TreeNode right = LowestCommonAncestor(root.right, p, q); // Recurse on right
+
+        if (left != null && right != null) return root; // Found p in one side and q in another → root is LCA
+
+        return left ?? right; // Return whichever side is not null
+    }
+}
+```
+
+---
+
+## 3️⃣ 🧮 Problem: Invert Binary Tree — O(n)
+
+### ✅ Goal
+Flip a binary tree like a mirror. Swap all left and right children.
+
+### 🌳 Example:
+```
+Original Tree:
+    4
+   / \
+  2   7
+ / \ / \
+1  3 6  9
+
+Inverted Tree:
+    4
+   / \
+  7   2
+ / \ / \
+9  6 3  1
+```
+
+### 💡 Core Idea
+Use recursion to visit every node and swap its left and right children.
+
+### ✅ C# Code with Line-by-Line Comments
+```csharp
+public class TreeInverter
+{
+    public TreeNode InvertTree(TreeNode root)
+    {
+        if (root == null) return null; // Base case: if tree is empty, nothing to flip
+
+        // Swap the left and right children
+        TreeNode temp = root.left;
+        root.left = root.right;
+        root.right = temp;
+
+        // Recursively invert left and right subtrees
+        InvertTree(root.left);
+        InvertTree(root.right);
+
+        return root; // Return the modified root
+    }
+}
+```
+
+
 
